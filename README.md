@@ -1,2 +1,2 @@
-test:
+jenkins test:
 v1
