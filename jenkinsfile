@@ -1,0 +1,23 @@
+pipeline{
+    agent any
+    stages{
+        stage('build'){
+            steps{
+                sh "docker build -t achrefchebbi/jenkins-test-flask:${env.BUILD_NUMBER} ."
+               
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                sh "docker login -u $user -p $pass"
+                sh "docker push achrefchebbi/jenkins-test-flask:${env.BUILD_NUMBER}"
+}
+               
+            }
+        }
+       
+        stage('deploy'){
+            steps{
+                sh"docker run -d -p 200${BUILD_NUMBER}:8080 achrefchebbi/jenkins-test-flask:${env.BUILD_NUMBER}"
+            }
+        }
+    }
+   
+}    
